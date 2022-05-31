@@ -1,18 +1,34 @@
+from ntpath import join
 import os
+from posixpath import dirname
+from unicodedata import name
+from certifi import where
 import cv2
 import face_recognition
 
 def main():
     path1 = input("Enter the location of the image: ")
-    path2 = input("Enter the location of the folder: ") 
+    path2 = input("Enter the location of the folder: ")
+    new_dir_name = input("Name the new folder: ")
+    new_dir_path = input("Enter the location of the new folder: ")
+    
+    dir_mkr(new_dir_path,new_dir_name)
 
-    file_path = ls_Imgs_Mkr(path2)
+    file_path = ls_imgs_mkr(path2)
 
     for images in range(len(file_path)):
         face_reco(path1,str(file_path[images]))
 
+def dir_mkr(path,dire_name):
+    
+    try:
+        os.mkdir(os.path.join(path,dire_name))
 
-def ls_Imgs_Mkr(path):
+    except OSError as error:
+
+        print("Error")
+
+def ls_imgs_mkr(path):
 
     ls_imgs_names = os.listdir(path)
     ls_imgs_path = [os.path.join(path, img) for img in ls_imgs_names]
