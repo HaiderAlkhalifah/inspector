@@ -1,9 +1,6 @@
-from ntpath import join
 import os
-from posixpath import dirname
-from unicodedata import name
-from certifi import where
 import cv2
+import shutil
 import face_recognition
 
 def main():
@@ -12,21 +9,28 @@ def main():
     new_dir_name = input("Name the new folder: ")
     new_dir_path = input("Enter the location of the new folder: ")
     
-    dir_mkr(new_dir_path,new_dir_name)
+    new_folder_path = dir_mkr(new_dir_path,new_dir_name)
 
     file_path = ls_imgs_mkr(path2)
 
     for images in range(len(file_path)):
-        face_reco(path1,str(file_path[images]))
+
+        result = face_reco(path1,str(file_path[images]))
+
+        if result == [True]:
+
+            shutil.copy2(str(file_path[images]),new_folder_path)
 
 def dir_mkr(path,dire_name):
     
     try:
-        os.mkdir(os.path.join(path,dire_name))
-
+        compete_path = os.path.join(path,dire_name)
+        os.mkdir(compete_path)
+        return compete_path
+        
     except OSError as error:
 
-        print("Error")
+        print(f"Error: {error}")
 
 def ls_imgs_mkr(path):
 
@@ -47,15 +51,13 @@ def face_reco(known,unknown):
     unknown_encoding = face_recognition.face_encodings(unknown_image) 
     unknown_location = face_recognition.face_locations(unknown_image) 
 
-    #result = face_recognition.compare_faces([knownFace_encoding], unknown_encoding)
-
     for _ , each_face_encoding in zip(unknown_location, unknown_encoding):
         
         result = face_recognition.compare_faces([knownFace_encoding],each_face_encoding)
         
         if result == [True]:
 
-            return print(result)
+            return result
         
     
 main()
