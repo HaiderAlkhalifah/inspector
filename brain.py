@@ -2,14 +2,16 @@ import os
 import cv2
 import shutil
 import face_recognition
+from tkinter import filedialog
+from tkinter import *
 
 def main():
-    path1 = input("Enter the location of the image: ")
-    path2 = input("Enter the location of the folder: ")
-    new_dir_name = input("Name the new folder: ")
-    new_dir_path = input("Enter the location of the new folder: ")
+    path1 = image_picker()
+    path2 = dir_root()
+    #new_dir_name = input("Name the new folder: ")
+    new_dir_path = new_folder_root()
     
-    new_folder_path = dir_mkr(new_dir_path,new_dir_name)
+    new_folder_path = dir_mkr(new_dir_path)
 
     file_path = ls_imgs_mkr(path2)
 
@@ -21,10 +23,26 @@ def main():
 
             shutil.copy2(str(file_path[images]),new_folder_path)
 
-def dir_mkr(path,dire_name):
+def image_picker():
+    root = Tk()
+    root.filename =  filedialog.askopenfilename(
+        initialdir = "/",title = "Select the image",filetypes = (("jpeg files","*.jpg"),("png files","*.png*"))
+        )
+    return root.filename
+
+def new_folder_root():
+    root = Tk()
+    root.filename =  filedialog.asksaveasfilename(initialdir = "/",title = "Select file")
+    return root.filename
+
+def dir_root():
+    file = filedialog.askdirectory()
+    return file
+
+def dir_mkr(path):
     
     try:
-        compete_path = os.path.join(path,dire_name)
+        compete_path = os.path.join(path)
         os.mkdir(compete_path)
         return compete_path
         
@@ -34,8 +52,8 @@ def dir_mkr(path,dire_name):
 
 def ls_imgs_mkr(path):
 
-    ls_imgs_names = os.listdir(path)
-    ls_imgs_path = [os.path.join(path, img) for img in ls_imgs_names]
+    ls_imgs_names = os.listdir(str(path))
+    ls_imgs_path = [os.path.join(str(path), img) for img in ls_imgs_names]
     return ls_imgs_path
 
 
